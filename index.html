@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Image Grid with Fixed Header and Fullscreen</title>
+    <title>Responsive Image Grid</title>
     <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#000000">
     <style>
-        body {
+        /* ... (CSS Styles -  as in your original file) ... */
+         body {
             font-family: sans-serif;
             margin: 0;
             background-color: #f4f4f4;
@@ -43,111 +45,88 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start; /* Aligns items to the beginning */
         }
 
-        .image-wrapper {
-            margin: 10px;
-            cursor: pointer;
-            height: 150px; /* Fixed height for thumbnails */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .image-item {
+            position: relative;
             overflow: hidden;
             border-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            /* Explicitly set width for larger screens */
-            width: calc(50% - 20px) !important;
+            cursor: pointer;
         }
 
-        /* Force clear on odd items for two-column layout */
-        .image-wrapper:nth-child(odd) {
-            clear: left !important;
-        }
-
-        @media (max-width: 600px) {
-            .image-wrapper {
-                /* Explicitly set width for smaller screens */
-                width: calc(100% - 20px) !important;
-                clear: none !important; /* Ensure no clear on single column */
-            }
-        }
-
-        .thumbnail-image {
+        .image-item img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: opacity 0.3s ease-in-out;
+            height: auto;
+            display: block;
+            transition: transform 0.3s ease;
         }
 
-        .image-wrapper:hover .thumbnail-image {
-            opacity: 0.8;
+        .image-item:hover img {
+            transform: scale(1.05);
         }
 
-        .fullscreen-overlay {
-            display: none;
+        /* Overlay Styles */
+        .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
+            display: flex;
             justify-content: center;
             align-items: center;
-            overflow: auto;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s;
         }
 
-        .fullscreen-overlay.active {
-            display: flex;
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .fullscreen-image {
+            max-width: 90%;
+            max-height: 90%;
         }
 
         .close-button {
             position: absolute;
             top: 20px;
-            right: 30px;
-            color: #fff;
-            font-size: 40px;
-            font-weight: bold;
+            right: 20px;
+            color: white;
+            font-size: 30px;
             cursor: pointer;
-            z-index: 1001;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
-        .fullscreen-image {
-            max-width: 95%;
-            max-height: 95%;
-            object-fit: contain;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-        }
+        /* Mobile Styles */
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
 
-        /* Hide header in landscape orientation for smaller screens (phones and tablets) */
-        @media (orientation: landscape) and (max-width: 1024px) {
+            .image-grid {
+                gap: 5px;
+            }
+
             .header {
-                display: none !important;
+                padding: 10px;
+                font-size: 0.9em;
             }
-            .content {
-                margin-top: 20px; /* Adjust margin when header is hidden */
-            }
-        }
 
-        /* Show header in portrait orientation for all screens */
-        @media (orientation: portrait) {
-            .header {
-                display: block !important;
-            }
             .content {
-                margin-top: 80px; /* Adjust margin when header is visible */
-            }
-        }
-
-        /* For larger screens (laptops and desktops), always show the header */
-        @media (min-width: 1025px) {
-            .header {
-                display: block !important;
-            }
-            .content {
-                margin-top: 80px; /* Adjust margin for larger screens */
+                margin-top: 60px;
+                padding-top: 10px;
+                padding-left: 10px;
+                padding-right: 10px;
             }
         }
     </style>
@@ -156,77 +135,49 @@
     <div class="header">
         <h1>My Image Gallery</h1>
     </div>
-
     <div class="content">
         <div class="container">
-            <div class="image-wrapper">
-                <img src="https://via.placeholder.com/300/E91E63/FFFFFF?Text=Image+1" alt="Image 1" class="thumbnail-image" data-fullsize="https://via.placeholder.com/800/E91E63/FFFFFF?Text=Image+1+Full">
-                <div class="fullscreen-overlay">
-                    <span class="close-button">&times;</span>
-                    <img src="" alt="Full Size Image 1" class="fullscreen-image">
+            <div class="image-grid">
+                <div class="image-item">
+                    <img src="https://via.placeholder.com/300/E91E63/FFFFFF?Text=Image+1" data-fullsize="https://via.placeholder.com/800/E91E63/FFFFFF?Text=Image+1+Full" alt="Image 1">
                 </div>
-            </div>
-            <div class="image-wrapper">
-                <img src="https://via.placeholder.com/300/9C27B0/FFFFFF?Text=Image+2" alt="Image 2" class="thumbnail-image" data-fullsize="https://via.placeholder.com/800/9C27B0/FFFFFF?Text=Image+2+Full">
-                <div class="fullscreen-overlay">
-                    <span class="close-button">&times;</span>
-                    <img src="" alt="Full Size Image 2" class="fullscreen-image">
+                <div class="image-item">
+                    <img src="https://via.placeholder.com/300/9C27B0/FFFFFF?Text=Image+2" data-fullsize="https://via.placeholder.com/800/9C27B0/FFFFFF?Text=Image+2+Full" alt="Image 2">
                 </div>
-            </div>
-            <div class="image-wrapper">
-                <img src="https://via.placeholder.com/300/3F51B5/FFFFFF?Text=Image+3" alt="Image 3" class="thumbnail-image" data-fullsize="https://via.placeholder.com/800/3F51B5/FFFFFF?Text=Image+3+Full">
-                <div class="fullscreen-overlay">
-                    <span class="close-button">&times;</span>
-                    <img src="" alt="Full Size Image 3" class="fullscreen-image">
+                <div class="image-item">
+                    <img src="https://via.placeholder.com/3F51B5/FFFFFF?Text=Image+3" data-fullsize="https://via.placeholder.com/800/3F51B5/FFFFFF?Text=Image+3+Full" alt="Image 3">
                 </div>
-            </div>
-            <div class="image-wrapper">
-                <img src="https://via.placeholder.com/300/00BCD4/FFFFFF?Text=Image+4" alt="Image 4" class="thumbnail-image" data-fullsize="https://via.placeholder.com/800/00BCD4/FFFFFF?Text=Image+4+Full">
-                <div class="fullscreen-overlay">
-                    <span class="close-button">&times;</span>
-                    <img src="" alt="Full Size Image 4" class="fullscreen-image">
+                 <div class="image-item">
+                    <img src="https://via.placeholder.com/00BCD4/FFFFFF?Text=Image+4" data-fullsize="https://via.placeholder.com/800/00BCD4/FFFFFF?Text=Image+4+Full" alt="Image 4">
                 </div>
-            </div>
-            <div class="image-wrapper">
-                <img src="https://via.placeholder.com/300/4CAF50/FFFFFF?Text=Image+5" alt="Image 5" class="thumbnail-image" data-fullsize="https://via.placeholder.com/800/4CAF50/FFFFFF?Text=Image+5+Full">
-                <div class="fullscreen-overlay">
-                    <span class="close-button">&times;</span>
-                    <img src="" alt="Full Size Image 5" class="fullscreen-image">
+                <div class="image-item">
+                    <img src="https://via.placeholder.com/4CAF50/FFFFFF?Text=Image+5" data-fullsize="https://via.placeholder.com/800/4CAF50/FFFFFF?Text=Image+5+Full" alt="Image 5">
                 </div>
-            </div>
-            <div class="image-wrapper">
-                <img src="https://via.placeholder.com/300/FF9800/FFFFFF?Text=Image+6" alt="Image 6" class="thumbnail-image" data-fullsize="https://via.placeholder.com/800/FF9800/FFFFFF?Text=Image+6+Full">
-                <div class="fullscreen-overlay">
-                    <span class="close-button">&times;</span>
-                    <img src="" alt="Full Size Image 6" class="fullscreen-image">
+                <div class="image-item">
+                    <img src="https://via.placeholder.com/FF9800/FFFFFF?Text=Image+6" data-fullsize="https://via.placeholder.com/800/FF9800/FFFFFF?Text=Image+6+Full" alt="Image 6">
                 </div>
+                <div class="image-item">
+                    <img src="https://via.placeholder.com/607D8B/FFFFFF?Text=Image+7" data-fullsize="https://via.placeholder.com/800/607D8B/FFFFFF?Text=Image+7+Full" alt="Image 7">
+                </div>
+                <div class="image-item">
+                    <img src="https://via.placeholder.com/000000/FFFFFF?Text=Image+8" data-fullsize="https://via.placeholder.com/800/000000/FFFFFF?Text=Image+8+Full" alt="Image 8">
+                </div>
+
             </div>
-            <div class="image-wrapper">
-                 <img src="https://via.placeholder.com/300/607D8B/FFFFFF?Text=Image+7" alt="Image 7" class="thumbnail-image" data-fullsize="https://via.placeholder.com/800/607D8B/FFFFFF?Text=Image+7+Full">
-                 <div class="fullscreen-overlay">
-                     <span class="close-button">&times;</span>
-                     <img src="" alt="Full Size Image 7" class="fullscreen-image">
-                 </div>
-             </div>
-             <div class="image-wrapper">
-                 <img src="https://via.placeholder.com/300/000000/FFFFFF?Text=Image+8" alt="Image 8" class="thumbnail-image" data-fullsize="https://via.placeholder.com/800/000000/FFFFFF?Text=Image+8+Full">
-                 <div class="fullscreen-overlay">
-                     <span class="close-button">&times;</span>
-                     <img src="" alt="Full Size Image 8" class="fullscreen-image">
-                 </div>
-             </div>
         </div>
     </div>
-
+    <div class="overlay">
+        <span class="close-button">&times;</span>
+        <img class="fullscreen-image" src="" alt="Fullsize Image">
+    </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const imageWrappers = document.querySelectorAll('.image-wrapper');
+            const thumbnails = document.querySelectorAll('.image-item img');
+            const overlay = document.querySelector('.overlay');
+            const fullscreenImage = document.querySelector('.fullscreen-image');
+            const closeButton = document.querySelector('.close-button');
 
-            imageWrappers.forEach(wrapper => {
-                const thumbnail = wrapper.querySelector('.thumbnail-image');
-                const overlay = wrapper.querySelector('.fullscreen-overlay');
-                const closeButton = overlay.querySelector('.close-button');
-                const fullscreenImage = overlay.querySelector('.fullscreen-image');
+            thumbnails.forEach(thumbnail => {
                 const fullsizeURL = thumbnail.getAttribute('data-fullsize');
 
                 thumbnail.addEventListener('click', function() {
