@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Image Grid with Fixed Header and Fullscreen</title>
+    <link rel="manifest" href="/manifest.json">
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Fixed Header */
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Content Area */
+        .content {
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-bottom: 20px;
+            /* Default margin-top to accommodate header */
+            margin-top: 80px;
+            padding-top: 20px; /* Some top padding for visual spacing */
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start; /* Aligns items to the beginning */
+        }
+
+        .image-wrapper {
+            margin: 10px;
+            cursor: pointer;
+            height: 150px; /* Fixed height for thumbnails */
+            overflow: hidden;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            /* Explicitly set width for larger screens */
+            width: calc(50% - 20px) !important;
+        }
+
+        /* Force clear on odd items for two-column layout */
+        .image-wrapper:nth-child(odd) {
+            clear: left !important;
+        }
+
+        @media (max-width: 600px) {
+            .image-wrapper {
+                /* Explicitly set width for smaller screens */
+                width: calc(100% - 20px) !important;
+                clear: none !important; /* Ensure no clear on single column */
+            }
+        }
+
+        .thumbnail-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .image-wrapper:hover .thumbnail-image {
+            opacity: 0.8;
+        }
+
+        .fullscreen-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
+        }
+
+        .fullscreen-overlay.active {
+            display: flex;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .fullscreen-image {
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        /* Hide header in landscape orientation for smaller screens (phones and tablets) */
+        @media (orientation: landscape) and (max-width: 1024px) {
+            .header {
+                display: none !important;
+            }
+            .content {
+                margin-top: 20px; /* Adjust margin when header is hidden */
+            }
+        }
+
+        /* Show header in portrait orientation for all screens */
+        @media (orientation: portrait) {
+            .header {
+                display: block !important;
+            }
+            .content {
+                margin-top: 80px; /* Adjust margin when header is visible */
+            }
+        }
+
+        /* For larger screens (laptops and desktops), always show the header */
+        @media (min-width: 1025px) {
+            .header {
+                display: block !important;
+            }
+            .content {
+                margin-top: 80px; /* Adjust margin for larger screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>My Image Gallery</h1>
+    </div>
+
+    <div class="content">
+        <div class="container">
+            <div class="image-wrapper">
+                <img src="https://via.placeholder.com/300/E91E63/FFFFFF?Text=Image+1" alt="Image 1" class="thumbnail-image" data-fullsize="https://via.placeholder.com/800/E91E63/FFFFFF?Text=Image+1+Full">
+                <div class="fullscreen-overlay">
+                    <span class="close-button">&times;</span>
+                    <img src="" alt="Full Size Image 1" class="fullscreen-image">
+                </div>
+            </div>
+            <div class="image-wrapper">
+                <img src="https://via.placeholder.com/300/9C27B0/FFFFFF?Text=Image+2" alt="Image 2" class="thumbnail-image" data-fullsize="https://via.placeholder.com/800/9C27B0/FFFFFF?Text=Image+2+Full">
+                <div class="fullscreen-overlay">
+                    <span class="close-button">&times;</span>
+                    <img src="" alt="Full Size Image 2" class="fullscreen-image">
+                </div>
+            </div>
+            <div class="image-wrapper">
+                <img src="https://via.placeholder.com/300/3F51B5/FFFFFF?Text=Image+3" alt="Image 3" class="thumbnail-image" data-fullsize="https://via.placeholder.com/800/3F51B5/FFFFFF?Text=Image+3+Full">
+                <div class="fullscreen-overlay">
+                    <span class="close-button">&times;</span>
+                    <img src="" alt="Full Size Image 3" class="fullscreen-image">
+                </div>
+            </div>
+            <div class="image-wrapper">
+                <img src="https://via.placeholder.com/300/00BCD4/FFFFFF?Text=Image+4" alt="Image 4" class="thumbnail-image" data-fullsize="https://via.placeholder.com/800/00BCD4/FFFFFF?Text=Image+4+Full">
+                <div class="fullscreen-overlay">
+                    <span class="close-button">&times;</span>
+                    <img src="" alt="Full Size Image 4" class="fullscreen-image">
+                </div>
+            </div>
+            <div class="image-wrapper">
+                <img src="https://via.placeholder.com/300/4CAF50/FFFFFF?Text=Image+5" alt="Image 5" class="thumbnail-image" data-fullsize="https://via.placeholder.com/800/4CAF50/FFFFFF?Text=Image+5+Full">
+                <div class="fullscreen-overlay">
+                    <span class="close-button">&times;</span>
+                    <img src="" alt="Full Size Image 5" class="fullscreen-image">
+                </div>
+            </div>
+            <div class="image-wrapper">
+                <img src="https://via.placeholder.com/300/FF9800/FFFFFF?Text=Image+6" alt="Image 6" class="thumbnail-image" data-fullsize="https://via.placeholder.com/800/FF9800/FFFFFF?Text=Image+6+Full">
+                <div class="fullscreen-overlay">
+                    <span class="close-button">&times;</span>
+                    <img src="" alt="Full Size Image 6" class="fullscreen-image">
+                </div>
+            </div>
+            <div class="image-wrapper">
+                 <img src="https://via.placeholder.com/300/607D8B/FFFFFF?Text=Image+7" alt="Image 7" class="thumbnail-image" data-fullsize="https://via.placeholder.com/800/607D8B/FFFFFF?Text=Image+7+Full">
+                 <div class="fullscreen-overlay">
+                     <span class="close-button">&times;</span>
+                     <img src="" alt="Full Size Image 7" class="fullscreen-image">
+                 </div>
+             </div>
+             <div class="image-wrapper">
+                 <img src="https://via.placeholder.com/300/000000/FFFFFF?Text=Image+8" alt="Image 8" class="thumbnail-image" data-fullsize="https://via.placeholder.com/800/000000/FFFFFF?Text=Image+8+Full">
+                 <div class="fullscreen-overlay">
+                     <span class="close-button">&times;</span>
+                     <img src="" alt="Full Size Image 8" class="fullscreen-image">
+                 </div>
+             </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const imageWrappers = document.querySelectorAll('.image-wrapper');
+
+            imageWrappers.forEach(wrapper => {
+                const thumbnail = wrapper.querySelector('.thumbnail-image');
+                const overlay = wrapper.querySelector('.fullscreen-overlay');
+                const closeButton = overlay.querySelector('.close-button');
+                const fullscreenImage = overlay.querySelector('.fullscreen-image');
+                const fullsizeURL = thumbnail.getAttribute('data-fullsize');
+
+                thumbnail.addEventListener('click', function() {
+                    fullscreenImage.src = fullsizeURL;
+                    overlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+
+                closeButton.addEventListener('click', function() {
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+                );
+
+                overlay.addEventListener('click', function(event) {
+                    if (event.target === this) {
+                        this.classList.remove('active');
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            });
+        });
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then((registration) => {
+                        console.log('Service worker registered: ', registration);
+                    })
+                    .catch((error) => {
+                        console.error('Service worker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
